@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Delete</title>
+</head>
+<body>
+
+<h2>Confirm Resign Employee</h2>
+
+<p>
+    Are you sure you want to mark
+    <b>{{ employee.name }}</b> as resigned?
+</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Mark as Resigned</button>
+    <a href="{% url 'employee_list' %}">Cancel</a>
+</form>
+
+</body>
+</html>

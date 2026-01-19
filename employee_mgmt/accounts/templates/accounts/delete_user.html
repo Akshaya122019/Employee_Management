@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete User</title>
+</head>
+<body>
+
+<h2 style="color:red;">Delete User</h2>
+
+<p>
+    Are you sure you want to permanently delete
+    <b>{{ user_obj.username }}</b>?
+</p>
+
+<p style="color:red;">
+    This action cannot be undone.
+</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="color:red;">Yes, Delete</button>
+    <a href="{% url 'user_list' %}">Cancel</a>
+</form>
+
+</body>
+</html>

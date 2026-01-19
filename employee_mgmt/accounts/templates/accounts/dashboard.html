@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+<h2>Dashboard</h2>
+
+<p>
+    Welcome <b>{{ request.user.username }}</b>
+</p>
+
+<p>
+    Role: <b>{{ request.user.role }}</b>
+</p>
+
+{% if request.user.role == "admin" %}
+    <hr>
+    <h3>Admin Actions</h3>
+
+    <a href="{% url 'add_company' %}">➕ Add Company</a><br><br>
+    <a href="{% url 'add_team' %}">➕ Add Team</a><br><br>
+
+    <a href="{% url 'add_employee' 'Feather' %}">➕ Add Feather Employee</a><br><br>
+    <a href="{% url 'add_employee' 'Ondezx' %}">➕ Add Ondezx Employee</a><br><br>
+{% endif %}
+
+<a href="{% url 'employee_list' %}">📋 View Employees</a>
+{% if request.user.role == 'admin' %}
+    <h3>Admin Menu</h3>
+    <ul>
+        <li>
+            <a href="{% url 'create_user' %}">➕ Add User</a>
+        </li>
+        <li>
+            <a href="{% url 'user_list' %}">👥 Users List</a>
+        </li>
+    </ul>
+{% endif %}
+
+<hr>
+
+<a href="{% url 'logout' %}">Logout</a>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Employee</title>
+</head>
+<body>
+
+<h2>Edit Employee - {{ employee.name }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Employee</button>
+</form>
+
+<br>
+<a href="{% url 'employee_list' %}">Back to Employee List</a>
+
+</body>
+</html>

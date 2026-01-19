@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Employee List</title>
+</head>
+
+<body>
+
+    <h2>Employees</h2>
+
+    <!-- FILTER -->
+    <a href="{% url 'employee_list' %}">All</a> |
+    <a href="{% url 'employee_list' %}?status=active">Active</a> |
+    <a href="{% url 'employee_list' %}?status=resigned">Resigned</a>
+
+    <br><br>
+
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Company</th>
+            <th>Team</th>
+            <th>Role</th>
+            <th>Date of Join</th>
+            <th>Image</th>
+            <th>Status</th>
+           <th>Login Access</th>
+            <th>Last Login</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp.name }}</td>
+            <td>{{ emp.user.username }}</td>
+            <td>{{ emp.company.name }}</td>
+            <td>{{ emp.team.name }}</td>
+            <td>{{emp.role}}</td>
+            <td>{{ emp.date_of_joining }}</td>
+            <td>
+                <img src="{{ emp.photo.url }}" alt="{{ emp.name }}" style="width: 100px;height: 100px;">
+            </td>
+            <td>{{ emp.status|title }}</td>
+            <td>
+                {% if emp.user %}
+                    {% if emp.user.is_active %}
+                        <span style="color:green;">Login Enabled</span>
+                    {% else %}
+                        <span style="color:red;">Disabled</span>
+                    {% endif %}
+                {% else %}
+                    <span style="color:gray;">No Login</span>
+                {% endif %}
+            </td>
+
+            <!-- LAST LOGIN -->
+            <td>
+                {% if emp.user and emp.user.last_login %}
+                    {{ emp.user.last_login|date:"Y-m-d H:i" }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            <td>
+                {% if request.user.role == "admin" %}
+                <a href="{% url 'employee_edit' emp.id %}">Edit</a> |
+                <a href="{% url 'employee_delete' emp.id %}" onclick="return confirm('Are you sure?');">
+                    Resign
+                </a>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="11" style="text-align: center;">No employees found</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+
+</body>
+
+</html>
