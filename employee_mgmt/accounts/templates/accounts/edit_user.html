@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit User</title>
-</head>
-<body>
+{% extends 'accounts/dashboard.html' %}
 
-<h2>Edit User – {{ user_obj.username }}</h2>
+{% block content %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update User</button>
-</form>
+<div class="container">
+    <div class="card m-auto border-0 shadow" style="width: 50%;">
+        <h3 class="p-3 text-center">Edit User – {{ user_obj.username }}</h3>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Update User</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <br>
 <a href="{% url 'user_list' %}">Back to Users List</a>
 
-</body>
-</html>
+{% endblock %}

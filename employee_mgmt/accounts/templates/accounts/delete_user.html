@@ -1,26 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Delete User</title>
-</head>
-<body>
+{% extends 'accounts/dashboard.html' %}
 
-<h2 style="color:red;">Delete User</h2>
+{% block content %}
 
-<p>
-    Are you sure you want to permanently delete
-    <b>{{ user_obj.username }}</b>?
-</p>
 
-<p style="color:red;">
-    This action cannot be undone.
-</p>
+<div class="container">
+    <div class="card m-auto border-0 shadow" style="width: 50%;">
+        <div class="card-body">
+            <h2 style="color:red;">Delete User</h2>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" style="color:red;">Yes, Delete</button>
-    <a href="{% url 'user_list' %}">Cancel</a>
-</form>
+            <p>
+                Are you sure you want to permanently delete
+                <b>{{ user_obj.username }}</b>?
+            </p>
 
-</body>
-</html>
+            <p style="color:red;">
+                This action cannot be undone.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                <a href="{% url 'user_list' %}" class="btn btn-success">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
