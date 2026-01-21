@@ -1,19 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add User</title>
-</head>
-<body>
+{% extends 'accounts/dashboard.html' %}
+{% block content %}
 
-<h2>Add User</h2>
+<div class="container" style="min-height: 100vh;">
+    <div class="margin-auto">
+        <h3 class="text-center mb-3">Create User</h3>
+        <div class="card m-auto" style="width: 500px;">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create User</button>
-</form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <a href="{% url 'dashboard' %}">Back</a>
 
-</body>
-</html>
+{% endblock %}

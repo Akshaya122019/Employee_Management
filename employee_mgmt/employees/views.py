@@ -13,27 +13,37 @@ def add_employee(request, company_name):
         employee_form = EmployeeWithUserForm(request.POST, request.FILES)
         user_form = UserCreateForm(request.POST)
 
+        print("POST DATA:", request.POST)
+        print("FILES DATA:", request.FILES)
+
         if employee_form.is_valid():
+            print("EMPLOYEE FORM VALID")
+
             employee = employee_form.save(commit=False)
             employee.company = company
             employee.created_by = request.user
+            if request.FILES.get('photo'):
+                employee.photo = request.FILES['photo']
+            employee.save()
+            print("EMPLOYEE SAVED")
 
-            # OPTIONAL LOGIN CREATION
             if employee_form.cleaned_data.get('create_login'):
+                print("CREATE LOGIN CHECKED")
+
                 if user_form.is_valid():
                     user = user_form.save(commit=False)
                     user.set_password(user_form.cleaned_data['password'])
                     user.save()
                     employee.user = user
+                    employee.save()
+                    print("USER CREATED + LINKED")
                 else:
-                    return render(request, 'employees/add_employee.html', {
-                        'employee_form': employee_form,
-                        'user_form': user_form,
-                        'company': company
-                    })
+                    print("USER FORM ERRORS:", user_form.errors)
 
-            employee.save()
             return redirect('employee_list')
+
+        else:
+            print("EMPLOYEE FORM ERRORS:", employee_form.errors)
 
     else:
         employee_form = EmployeeWithUserForm()

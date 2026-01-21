@@ -1,51 +1,81 @@
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+{% extends 'accounts/dashboard.html' %}
 
-    <h3>Employee Details</h3>
-    <label>Name: </label>
-    {{ employee_form.name }} <br><br>
-    <label>ID Card: </label>
-    {{ employee_form.identity_card_id }} <br><br>
-    <label>Phone Number: </label>
-    {{ employee_form.phone }} <br><br>
-    <label>Team: </label>
-    {{ employee_form.team }} <br><br>
-    <label>Role: </label>
-    {{ employee_form.role }} <br><br>
-    <label>Image: </label>
-    {{ employee_form.photo }} <br><br>
-    <label>Blood Group: </label>
-    {{ employee_form.blood_group }} <br><br>
-    <label>Date of Joining: </label>
-    {{ employee_form.date_of_joining }} <br><br>
-    <label>Status: </label>
-    {{ employee_form.status }} <br><br>
 
-    <!-- ✅ USE FORM FIELD -->
-    <div>
-        {{ employee_form.create_login }}
-        <label for="{{ employee_form.create_login.id_for_label }}">
-            Create system login for this employee
-        </label>
+{% block content %}
+<div class="container">
+    <div class="m-aut0">
+        <div class="card m-auto border-0 shadow" style="width: 80%;">
+        <div class="card-body">
+            {% if employee_form.errors %}
+            <div style="color:red; padding:10px; border:1px solid red;">
+                <b>Employee Errors:</b><br>
+                {{ employee_form.errors }}
+            </div>
+            {% endif %}
+            {% if user_form.errors %}
+            <div style="color:red; padding:10px; border:1px solid red;">
+                <b>User Errors:</b><br>
+                {{ user_form.errors }}
+            </div>
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <h3 class="text-center">Employee Details</h3>
+                <label>Name: </label>
+                {{ employee_form.name }} <br><br>
+                <label>ID Card: </label>
+                {{ employee_form.identity_card_id }} <br><br>
+                <label>Phone Number: </label>
+                {{ employee_form.phone }} <br><br>
+                <label>Email: </label>
+                {{ employee_form.email }} <br><br>
+                <label>Team: </label>
+                {{ employee_form.team }} <br><br>
+                <label>Role: </label>
+                {{ employee_form.role }} <br><br>
+                <label>Image: </label>
+                {{ employee_form.photo }} <br><br>
+                <label>Blood Group: </label>
+                {{ employee_form.blood_group }} <br><br>
+                <label>Date of Joining: </label>
+                {{ employee_form.date_of_joining }} <br><br>
+                <label>Status: </label>
+                {{ employee_form.status }} <br><br>
+
+                <!-- ✅ USE FORM FIELD -->
+                <div class="pb-4">
+                    {{ employee_form.create_login }}
+                    <label for="{{ employee_form.create_login.id_for_label }}">
+                        Create system login for this employee
+                    </label>
+                </div>
+
+                <div id="login-fields" style="display:none;">
+                    <h3 class="pb-4">Login Details</h3>
+                    {{ user_form.as_p }}
+                </div>
+
+                <button type="submit" class="btn btn-success">Save</button>
+            </form>
+
+        </div>
     </div>
-
-    <div id="login-fields" style="display:none;">
-        <h3>Login Details</h3>
-        {{ user_form.as_p }}
     </div>
-
-    <button type="submit">Save</button>
-</form>
+    
+</div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const checkbox = document.getElementById(
-        "{{ employee_form.create_login.id_for_label }}"
-    );
-    const loginFields = document.getElementById("login-fields");
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkbox = document.getElementById(
+            "{{ employee_form.create_login.id_for_label }}"
+        );
+        const loginFields = document.getElementById("login-fields");
 
-    checkbox.addEventListener("change", function () {
-        loginFields.style.display = this.checked ? "block" : "none";
+        checkbox.addEventListener("change", function () {
+            loginFields.style.display = this.checked ? "block" : "none";
+        });
     });
-});
 </script>
+
+{% endblock %}

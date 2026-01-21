@@ -81,60 +81,43 @@
             font-size: 15px;
         }
 
-        /* Alert Messages */
-        .alert-message {
-            background: #fee;
-            color: #c33;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid #c33;
-            font-size: 14px;
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        /* Django Form Styling */
-        form p {
-            margin-bottom: 20px;
-        }
-
-        form p label {
+        .form-label {
             color: #333;
             font-weight: 500;
             margin-bottom: 8px;
             font-size: 14px;
-            display: block;
         }
 
-        form p input[type="text"],
-        form p input[type="password"],
-        form p input[type="email"] {
-            width: 100%;
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group-text {
+            background: #f8f9fa;
             border: 2px solid #e9ecef;
-            border-radius: 12px;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            color: #667eea;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-left: none;
+            border-radius: 0 12px 12px 0;
             padding: 12px 16px;
             font-size: 15px;
             transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
             background: #fff;
         }
 
-        form p input[type="text"]:focus,
-        form p input[type="password"]:focus,
-        form p input[type="email"]:focus {
-            outline: none;
+        .input-group:focus-within .input-group-text {
             border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-        }
-
-        /* Hide default help text if needed */
-        form .helptext {
-            display: none;
+            background: #f0f3ff;
         }
 
         .form-check-input:checked {
@@ -159,7 +142,6 @@
             width: 100%;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            cursor: pointer;
         }
 
         .btn-login:hover {
@@ -171,6 +153,7 @@
         .btn-login:active {
             transform: translateY(0);
         }
+
 
         @media (max-width: 576px) {
             .login-card {
@@ -193,29 +176,29 @@
             <h2>Welcome Back</h2>
             <p>Please login to your account</p>
         </div>
-
         {% if form.errors %}
-        <div class="alert-message">
-            <i class="fas fa-exclamation-circle"></i> Invalid username or password
-        </div>
+        <p style="color:red;">Invalid username or password</p>
         {% endif %}
-
         {% if messages %}
         {% for message in messages %}
-        <div class="alert-message">
-            <i class="fas fa-exclamation-circle"></i> {{ message }}
-        </div>
+        <p style="color:red;">{{ message }}</p>
         {% endfor %}
         {% endif %}
-
-        <form method="post">
+        <form>
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="mb-3">
+                {{ form.as_p }}
+            </div>
+
+
 
             <button type="submit" class="btn btn-login">
                 Sign In
             </button>
         </form>
+
+
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>

@@ -62,6 +62,7 @@ class Employee(models.Model):
     identity_card_id = models.CharField(max_length=50, unique=True)
 
     phone = models.CharField(max_length=20)
+    email = models.EmailField(unique=True,blank=True,null=True)
     role = models.CharField(max_length=100)
 
     photo = models.ImageField(

@@ -1,22 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Confirm Delete</title>
-</head>
-<body>
+{% extends 'accounts/dashboard.html' %}
 
-<h2>Confirm Resign Employee</h2>
 
-<p>
-    Are you sure you want to mark
-    <b>{{ employee.name }}</b> as resigned?
-</p>
+{% block content %}
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, Mark as Resigned</button>
-    <a href="{% url 'employee_list' %}">Cancel</a>
-</form>
+<div class="container">
+    <div class="card m-auto border-0 shadow" style="width: 70%;">
+        <div class="card-body">
+            <p>
+                Are you sure you want to mark
+                <b>{{ employee.name }}</b> as resigned?
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Yes, Mark as Resigned</button>
+                <a href="{% url 'employee_list' %}" class="btn btn-success">Cancel</a>
+            </form> 
+        </div>
+    </div>
+</div>
 
-</body>
-</html>
+
+{% endblock %}

@@ -2,13 +2,38 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.decorators import admin_required
 from django.views.decorators.http import require_POST
+from django.contrib.auth import get_user_model
+from employees.models import Employee, Company
 from .forms import *
 from .models import *
 
+User = get_user_model()
 
 @login_required
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+
+    feather = Company.objects.filter(name__iexact="Feather").first()
+    ondezx = Company.objects.filter(name__iexact="Ondezx").first()
+
+    feather_count = Employee.objects.filter(company=feather).count() if feather else 0
+    ondezx_count = Employee.objects.filter(company=ondezx).count() if ondezx else 0
+
+    total_employees = Employee.objects.count()
+    total_users = User.objects.filter(is_active=True).count()
+
+    active_employees = Employee.objects.filter(status='active').count()
+    resigned_employees = Employee.objects.filter(status='resigned').count()
+
+    context = {
+        'feather_count': feather_count,
+        'ondezx_count': ondezx_count,
+        'total_employees': total_employees,
+        'total_users': total_users,
+        'active_employees': active_employees,
+        'resigned_employees': resigned_employees,
+    }
+
+    return render(request, 'accounts/dashboard.html', context)
 
 
 @admin_required

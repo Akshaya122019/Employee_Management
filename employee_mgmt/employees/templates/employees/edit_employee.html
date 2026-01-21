@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Employee</title>
-</head>
-<body>
+{% extends 'accounts/dashboard.html' %}
 
-<h2>Edit Employee - {{ employee.name }}</h2>
+{% block content %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Employee</button>
-</form>
+<h2 class="text-center">Edit Employee - {{ employee.name }}</h2>
+
+<div class="container">
+    <div class="card m-auto" style="width: 80%;">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Update Employee</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <br>
 <a href="{% url 'employee_list' %}">Back to Employee List</a>
 
-</body>
-</html>
+{% endblock %}

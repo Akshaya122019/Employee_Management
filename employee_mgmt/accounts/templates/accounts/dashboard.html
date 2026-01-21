@@ -1,47 +1,341 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Top Navigation Bar */
+        .top-navbar {
+            background: linear-gradient(to right, #4a5a94, #8a8a9e);
+            height: 60px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            padding: 0;
+        }
+
+        .nav-brand {
+            background: #4a5a94;
+            width: 350px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 0 20px;
+            cursor: pointer;
+            height: 60px;
+            display: none;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-section {
+            margin-left: auto;
+            padding-right: 30px;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        .admin-section i {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 60px);
+            background: #2c3e50;
+            transition: all 0.3s;
+            z-index: 1020;
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            left: -250px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu li a:hover {
+            background: #34495e;
+            border-left-color: #3498db;
+        }
+
+        .sidebar-menu li a.active {
+            background: #34495e;
+            border-left-color: #3498db;
+        }
+
+        .sidebar-menu li a i {
+            width: 25px;
+            margin-right: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 60px;
+            margin-left: 250px;
+            padding: 30px;
+            transition: all 0.3s;
+            min-height: calc(100vh - 60px);
+            background: #ecf0f1;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toggle-btn {
+                display: block;
+            }
+
+            .nav-brand {
+                width: auto;
+                flex: 1;
+            }
+
+            .nav-brand span {
+                display: inline;
+            }
+
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.show {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 60px);
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1015;
+            }
+
+            .overlay.show {
+                display: block;
+            }
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Top Navigation -->
+    <nav class="top-navbar">
+        <div class="nav-brand">
+            <span>Employee Management</span>
+        </div>
+        <button class="toggle-btn" id="toggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="admin-section">
+            <i class="fas fa-user"></i>
+            <p>Welcome <b>{{ request.user.username }}</p><br>
 
-<h2>Dashboard</h2>
+        </div>
+        <p>
+            Role: <b>{{ request.user.role }}</b>
+        </p>
+    </nav>
 
-<p>
-    Welcome <b>{{ request.user.username }}</b>
-</p>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <ul class="sidebar-menu mt-4">
+            <li>
+                <a href="{% url 'dashboard' %}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            </li>
+            {% if request.user.role == "admin" %}
+            <li>
+                <a href="{% url 'create_user' %}"><i class="fa-solid fa-user-plus"></i> Add User</a>
+            </li>
+            <li>
+                <a href="{% url 'user_list' %}"><i class="fas fa-users"></i>Users List</a>
+            </li>
+            <li><a href="{% url 'add_company' %}" class=""><i class="fas fa-home"></i> Add Company</a></li>
+            <li><a href="{% url 'add_team' %}"><i class="fa-solid fa-people-group"></i> Add Team</a></li>
+            <li><a href="{% url 'add_employee' 'Feather' %}"><i class="fa-solid fa-person-circle-plus"></i> Add Feather
+                    Employee</a></li>
+            <li><a href="{% url 'add_employee' 'Ondezx' %}"><i class="fa-solid fa-person-circle-plus"></i> Add Ondezx
+                    Employee</a></li>
+            {% endif %}
 
-<p>
-    Role: <b>{{ request.user.role }}</b>
-</p>
+            <li><a href="{% url 'employee_list' %}"><i class="fa-regular fa-clipboard"></i>View Employees</a></li>
 
-{% if request.user.role == "admin" %}
-    <hr>
-    <h3>Admin Actions</h3>
+            <li class="bg-danger"><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </aside>
 
-    <a href="{% url 'add_company' %}">➕ Add Company</a><br><br>
-    <a href="{% url 'add_team' %}">➕ Add Team</a><br><br>
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
 
-    <a href="{% url 'add_employee' 'Feather' %}">➕ Add Feather Employee</a><br><br>
-    <a href="{% url 'add_employee' 'Ondezx' %}">➕ Add Ondezx Employee</a><br><br>
-{% endif %}
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
 
-<a href="{% url 'employee_list' %}">📋 View Employees</a>
-{% if request.user.role == 'admin' %}
-    <h3>Admin Menu</h3>
-    <ul>
-        <li>
-            <a href="{% url 'create_user' %}">➕ Add User</a>
-        </li>
-        <li>
-            <a href="{% url 'user_list' %}">👥 Users List</a>
-        </li>
-    </ul>
-{% endif %}
+        {% block content %}
 
-<hr>
+        <h2 class="mb-4">Dashboard Overview</h2>
 
-<a href="{% url 'logout' %}">Logout</a>
+        <div class="row g-4">
 
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <h5>Total Employees</h5>
+                    <h2>{{ total_employees }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <i class="fas fa-building fa-2x text-success mb-2"></i>
+                    <h5>Feather Employees</h5>
+                    <h2>{{ feather_count }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <i class="fas fa-building fa-2x text-warning mb-2"></i>
+                    <h5>Ondezx Employees</h5>
+                    <h2>{{ ondezx_count }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <i class="fas fa-user-check fa-2x text-success mb-2"></i>
+                    <h5>Active Employees</h5>
+                    <h2>{{ active_employees }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <i class="fas fa-user-times fa-2x text-danger mb-2"></i>
+                    <h5>Resigned Employees</h5>
+                    <h2>{{ resigned_employees }}</h2>
+                </div>
+            </div>
+
+            {% if request.user.role == "admin" %}
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-4">
+                    <i class="fas fa-user-shield fa-2x text-dark mb-2"></i>
+                    <h5>Total Login Users</h5>
+                    <h2>{{ total_users }}</h2>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        {% endblock %}
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const overlay = document.getElementById('overlay');
+
+        toggleBtn.addEventListener('click', function () {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            } else {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        });
+
+        // Close sidebar on mobile when clicking a link
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
