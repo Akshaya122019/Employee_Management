@@ -15,22 +15,18 @@
     <table cellpadding="5" class="table table-striped table-bordered">
         <tr>
             <th>Name</th>
-            <th>Username</th>
             <th>Company</th>
             <th>Team</th>
             <th>Role</th>
             <th>Date of Join</th>
             <th>Image</th>
             <th>Status</th>
-            <th>Login Access</th>
-            <th>Last Login</th>
             <th>Actions</th>
         </tr>
 
         {% for emp in employees %}
         <tr>
             <td>{{ emp.name }}</td>
-            <td>{{ emp.user.username }}</td>
             <td>{{ emp.company.name }}</td>
             <td>{{ emp.team.name }}</td>
             <td>{{emp.role}}</td>
@@ -45,26 +41,8 @@
 
             </td>
             <td>{{ emp.status|title }}</td>
-            <td>
-                {% if emp.user %}
-                {% if emp.user.is_active %}
-                <span style="color:green;">Login Enabled</span>
-                {% else %}
-                <span style="color:red;">Disabled</span>
-                {% endif %}
-                {% else %}
-                <span style="color:gray;">No Login</span>
-                {% endif %}
-            </td>
+            
 
-            <!-- LAST LOGIN -->
-            <td>
-                {% if emp.user and emp.user.last_login %}
-                {{ emp.user.last_login|date:"Y-m-d H:i" }}
-                {% else %}
-                —
-                {% endif %}
-            </td>
             <td>
                 {% if request.user.role == "admin" %}
                 <a href="{% url 'employee_edit' emp.id %}">Edit</a> |

@@ -5,96 +5,58 @@ from .models import *
 from .forms import *
 from accounts.forms import UserCreateForm
 
+
+@login_required
 @admin_required
 def add_employee(request, company_name):
     company = get_object_or_404(Company, name__iexact=company_name)
 
-    if request.method == 'POST':
-        employee_form = EmployeeWithUserForm(request.POST, request.FILES)
-        user_form = UserCreateForm(request.POST)
-
-        print("POST DATA:", request.POST)
-        print("FILES DATA:", request.FILES)
-
-        if employee_form.is_valid():
-            print("EMPLOYEE FORM VALID")
-
-            employee = employee_form.save(commit=False)
+    if request.method == "POST":
+        form = EmployeeForm(request.POST, request.FILES, company=company)
+        if form.is_valid():
+            employee = form.save(commit=False)
             employee.company = company
             employee.created_by = request.user
-            if request.FILES.get('photo'):
-                employee.photo = request.FILES['photo']
             employee.save()
-            print("EMPLOYEE SAVED")
-
-            if employee_form.cleaned_data.get('create_login'):
-                print("CREATE LOGIN CHECKED")
-
-                if user_form.is_valid():
-                    user = user_form.save(commit=False)
-                    user.set_password(user_form.cleaned_data['password'])
-                    user.save()
-                    employee.user = user
-                    employee.save()
-                    print("USER CREATED + LINKED")
-                else:
-                    print("USER FORM ERRORS:", user_form.errors)
-
-            return redirect('employee_list')
-
-        else:
-            print("EMPLOYEE FORM ERRORS:", employee_form.errors)
-
+            return redirect('dashboard')
     else:
-        employee_form = EmployeeWithUserForm()
-        user_form = UserCreateForm()
+        form = EmployeeForm(company=company)
 
     return render(request, 'employees/add_employee.html', {
-        'employee_form': employee_form,
-        'user_form': user_form,
+        'form': form,
         'company': company
     })
 
 
-@login_required
-@admin_required
-def add_company(request):
-    if request.method == 'POST':
-        form = CompanyForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-    else:
-        form = CompanyForm()
+# @login_required
+# def employee_list(request):
+#     employees = Employee.objects.select_related('team', 'company')
 
-    return render(request, 'employees/add_company.html', {'form': form})
+#     status = request.GET.get('status')
+#     if status in ['active', 'resigned']:
+#         employees = employees.filter(status=status)
 
-@login_required
-@admin_required
-def add_team(request):
-    if request.method == 'POST':
-        form = TeamForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-    else:
-        form = TeamForm()
+#     return render(request, 'employees/employee_list.html', {
+#         'employees': employees
+#     })
 
-    return render(request, 'employees/add_team.html', {'form': form})
+def company_list(request):
+    companies = Company.objects.all()
+    return render(request, 'employees/company_list.html', {'companies': companies})
 
-@login_required
-def employee_list(request):
-    employees = Employee.objects.select_related('user', 'team', 'company')
+
+def company_employees(request, company_id):
+    company = get_object_or_404(Company, id=company_id)
+    employees = Employee.objects.filter(company=company).select_related('team')
 
     status = request.GET.get('status')
-    if status in ['active', 'resigned']:
+    if status:
         employees = employees.filter(status=status)
 
-    return render(request, 'employees/employee_list.html', {
+    return render(request, 'employees/company_employees.html', {
+        'company': company,
         'employees': employees
     })
-
-
 
 @login_required
 @admin_required
@@ -136,3 +98,63 @@ def delete_employee(request, employee_id):
         'employee': employee
     })
 
+@login_required
+@admin_required
+def add_company(request):
+    if request.method == 'POST':
+        form = CompanyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = CompanyForm()
+
+    return render(request, 'employees/add_company.html', {'form': form})
+
+@login_required
+@admin_required
+def view_company(request):
+    company = Company.objects.all()
+    return render(request,"employees/view_company.html",{'company':company})
+
+@login_required
+@admin_required
+def edit_company(request,pk):
+    company=get_object_or_404(Company,pk=pk)
+    if request.method == "POST":
+        form = CompanyForm(request.POST,instance=company)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Company Updated Successfully")
+            return redirect('view_company')
+    else:
+        form = CompanyForm(instance=company)
+    return render(request,"employees/edit_company.html",{'form':form})
+
+
+@login_required
+@admin_required
+def company_delete(request,pk):
+    detail=Company.objects.get(id=pk)
+    detail.delete()
+    messages.error(request, "Customer deleted successfully.")
+    return redirect('view_company')
+
+@login_required
+@admin_required
+def add_team(request):
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = TeamForm()
+
+    return render(request, 'employees/add_team.html', {'form': form})
+
+@login_required
+@admin_required
+def view_team(request):
+    team = Team.objects.all()
+    return render(request,"employees/view_team.html",{'team':team})

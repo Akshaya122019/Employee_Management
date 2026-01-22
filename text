@@ -1,0 +1,9 @@
+dashboard.html
+<!-- <li><a href="{% url 'add_employee' 'Feather' %}"><i class="fa-solid fa-person-circle-plus"></i> Add Feather
+                    Employee</a></li>
+            <li><a href="{% url 'add_employee' 'Ondezx' %}"><i class="fa-solid fa-person-circle-plus"></i> Add Ondezx
+                    Employee</a></li> -->
+
+
+
+<!-- <li><a href="{% url 'employee_list' %}"><i class="fa-regular fa-clipboard"></i>View Employees</a></li> -->

@@ -88,7 +88,7 @@
             left: 0;
             width: 250px;
             height: calc(100vh - 60px);
-            background: #2c3e50;
+            background: #3b6692;
             transition: all 0.3s;
             z-index: 1020;
             overflow-y: auto;
@@ -117,6 +117,7 @@
         .sidebar-menu li a:hover {
             background: #34495e;
             border-left-color: #3498db;
+            color: white;
         }
 
         .sidebar-menu li a.active {
@@ -212,24 +213,34 @@
     <aside class="sidebar" id="sidebar">
         <ul class="sidebar-menu mt-4">
             <li>
-                <a href="{% url 'dashboard' %}"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                    href="{% url 'dashboard' %}">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
             </li>
             {% if request.user.role == "admin" %}
             <li>
-                <a href="{% url 'create_user' %}"><i class="fa-solid fa-user-plus"></i> Add User</a>
+                <a href="{% url 'create_user' %}" class="nav-link {% if request.resolver_match.url_name == 'create_user' %}active{% endif %}"><i class="fa-solid fa-user-plus"></i> Add User</a>
             </li>
             <li>
-                <a href="{% url 'user_list' %}"><i class="fas fa-users"></i>Users List</a>
+                <a href="{% url 'user_list' %}" class="nav-link {% if request.resolver_match.url_name == 'user_list' %}active{% endif %}"><i class="fas fa-users"></i>Users List</a>
             </li>
-            <li><a href="{% url 'add_company' %}" class=""><i class="fas fa-home"></i> Add Company</a></li>
-            <li><a href="{% url 'add_team' %}"><i class="fa-solid fa-people-group"></i> Add Team</a></li>
-            <li><a href="{% url 'add_employee' 'Feather' %}"><i class="fa-solid fa-person-circle-plus"></i> Add Feather
+            <li><a href="{% url 'add_company' %}" class="nav-link {% if request.resolver_match.url_name == 'add_company' %}active{% endif %}"><i class="fas fa-home"></i> Add Company</a></li>
+            <li><a href="{% url 'view_company' %}" class="nav-link {% if request.resolver_match.url_name == 'view_company' %}active{% endif %}"><i class="fa-regular fa-clipboard"></i>View Companies</a></li>
+            <li><a href="{% url 'add_team' %}" class="nav-link {% if request.resolver_match.url_name == 'add_team' %}active{% endif %}"><i class="fa-solid fa-people-group"></i> Add Team</a></li>
+            <li><a href="{% url 'view_team' %}" class="nav-link {% if request.resolver_match.url_name == 'view_team' %}active{% endif %}"><i class="fa-regular fa-clipboard"></i>View Teams</a></li>
+            <li><a href="{% url 'add_employee' 'Feather' %}" class="nav-link {% if request.resolver_match.url_name == 'add_employee' %}active{% endif %}"><i class="fa-solid fa-person-circle-plus"></i> Add Feather
                     Employee</a></li>
-            <li><a href="{% url 'add_employee' 'Ondezx' %}"><i class="fa-solid fa-person-circle-plus"></i> Add Ondezx
+            <li><a href="{% url 'add_employee' 'Ondezx' %}" class="nav-link {% if request.resolver_match.url_name == 'add_employee' %}active{% endif %}"><i class="fa-solid fa-person-circle-plus"></i> Add Ondezx
                     Employee</a></li>
-            {% endif %}
 
-            <li><a href="{% url 'employee_list' %}"><i class="fa-regular fa-clipboard"></i>View Employees</a></li>
+            {% endif %}
+            <li>
+                <a href="{% url 'company_list' %}" class="nav-link {% if request.resolver_match.url_name == 'company_list' %}active{% endif %}">
+                    <i class="fa-regular fa-clipboard"></i> Employees List
+                </a>
+            </li>
+
 
             <li class="bg-danger"><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>

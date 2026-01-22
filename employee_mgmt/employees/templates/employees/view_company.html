@@ -1,0 +1,40 @@
+{% extends 'accounts/dashboard.html' %}
+
+{% block content %}
+<h2 class="text-center">Companies</h2>
+
+<!-- FILTER -->
+
+
+<div class="container">
+    <table class="table table-striped">
+        <tr>
+            <th>S.NO</th>
+            <th>Company Name</th>
+            <th>Actions</th>
+        </tr>
+        {% for i in company %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.name}}</td>
+            <td>
+                <a href="{% url 'edit_company' i.id %}" class="btn btn-warning">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </a>
+                <form method="post" action="{% url 'company_delete' i.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this Company?')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+<br>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+
+{% endblock %}

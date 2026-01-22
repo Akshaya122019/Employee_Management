@@ -1,0 +1,19 @@
+{% extends 'accounts/dashboard.html' %}
+{% block content %}
+
+<h2 class="text-center mb-4">Companies</h2>
+
+<div class="row">
+    {% for company in companies %}
+    <div class="col-md-4 mb-4">
+        <div class="card shadow text-center p-3">
+            <h5>{{ company.name }}</h5>
+            <a href="{% url 'company_employees' company.id %}" class="btn btn-primary mt-2">
+                View Employees
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

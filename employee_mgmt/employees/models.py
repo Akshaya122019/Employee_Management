@@ -38,14 +38,6 @@ class Employee(models.Model):
         ('O+', 'O+'), ('O-', 'O-'),
         ('AB+', 'AB+'), ('AB-', 'AB-'),
     )
-
-    # 🔑 LINK TO LOGIN ACCOUNT
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='employee_profile',null=True,blank=True
-    )
-
     company = models.ForeignKey(
         Company,
         on_delete=models.CASCADE,
