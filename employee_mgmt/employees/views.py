@@ -125,7 +125,6 @@ def edit_company(request,pk):
         form = CompanyForm(request.POST,instance=company)
         if form.is_valid():
             form.save()
-            messages.success(request,"Company Updated Successfully")
             return redirect('view_company')
     else:
         form = CompanyForm(instance=company)
@@ -137,7 +136,6 @@ def edit_company(request,pk):
 def company_delete(request,pk):
     detail=Company.objects.get(id=pk)
     detail.delete()
-    messages.error(request, "Customer deleted successfully.")
     return redirect('view_company')
 
 @login_required
