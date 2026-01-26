@@ -1,0 +1,85 @@
+<!-- templates/employees/exports/employees_print.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ company.name }} - Employee List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #4472C4;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .no-data {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+        }
+        @media print {
+            body {
+                margin: 0;
+            }
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.print()" style="margin-bottom: 20px; padding: 10px 20px; background: #4472C4; color: white; border: none; cursor: pointer; border-radius: 5px;">
+        Print this page
+    </button>
+
+    <h1>{{ company.name }} - Employee List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Team</th>
+                <th>Role</th>
+                <th>Date of Joining</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr>
+                <td>{{ emp.name }}</td>
+                <td>{{ emp.team.name|default:"N/A" }}</td>
+                <td>{{ emp.role }}</td>
+                <td>{{ emp.date_of_joining|date:"Y-m-d" }}</td>
+                <td>{{ emp.status|title }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="no-data">No employees found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

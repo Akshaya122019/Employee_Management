@@ -1,0 +1,15 @@
+<h2>{{ company.name }} - Employees</h2>
+<table border="1" width="100%" cellpadding="5">
+<tr>
+  <th>Name</th><th>Team</th><th>Role</th><th>DOJ</th><th>Status</th>
+</tr>
+{% for emp in employees %}
+<tr>
+  <td>{{ emp.name }}</td>
+  <td>{{ emp.team.name }}</td>
+  <td>{{ emp.role }}</td>
+  <td>{{ emp.date_of_joining }}</td>
+  <td>{{ emp.status }}</td>
+</tr>
+{% endfor %}
+</table>

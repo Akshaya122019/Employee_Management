@@ -40,7 +40,7 @@ class Employee(models.Model):
     )
     company = models.ForeignKey(
         Company,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, 
         related_name='employees'
     )
 

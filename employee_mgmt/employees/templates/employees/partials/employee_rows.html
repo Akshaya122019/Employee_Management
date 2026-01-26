@@ -1,0 +1,35 @@
+<!-- templates/employees/partials/employee_rows.html -->
+{% for emp in employees %}
+<tr>
+    <td>{{ emp.name }}</td>
+    <td>{{ emp.team.name|default:"N/A" }}</td>
+    <td>{{ emp.role }}</td>
+    <td>{{ emp.date_of_joining|date:"Y-m-d" }}</td>
+    <td>
+        {% if emp.photo %}
+        <img src="{{ emp.photo.url }}" width="50" height="50" style="object-fit: cover; border-radius: 5px;">
+        {% else %}
+        <span class="text-muted">No Photo</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if emp.status == 'active' %}
+        <span class="badge bg-success">Active</span>
+        {% else %}
+        <span class="badge bg-secondary">Resigned</span>
+        {% endif %}
+    </td>
+    <td class="no-print">
+        {% if request.user.role == "admin" %}
+        <a href="{% url 'employee_edit' emp.id %}" class="btn btn-sm btn-primary">Edit</a>
+        <a href="{% url 'employee_delete' emp.id %}" class="btn btn-sm btn-danger">Resign</a>
+        {% endif %}
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7" class="text-center text-muted py-4">
+        No employees found matching your criteria.
+    </td>
+</tr>
+{% endfor %}

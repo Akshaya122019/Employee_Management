@@ -4,11 +4,13 @@ from .models import *
 class EmployeeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        self.company = kwargs.pop('company', None)  # <-- IMPORTANT
+        self.company = kwargs.pop('company', None)
         super().__init__(*args, **kwargs)
 
         if self.company:
             self.fields['team'].queryset = Team.objects.filter(company=self.company)
+        elif self.instance.pk:
+            self.fields['team'].queryset = Team.objects.filter(company=self.instance.company)
         else:
             self.fields['team'].queryset = Team.objects.none()
 

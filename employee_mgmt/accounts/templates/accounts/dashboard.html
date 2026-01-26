@@ -20,7 +20,7 @@
 
         /* Top Navigation Bar */
         .top-navbar {
-            background: linear-gradient(to right, #4a5a94, #8a8a9e);
+            background-color: #53b387;
             height: 60px;
             position: fixed;
             top: 0;
@@ -33,7 +33,7 @@
         }
 
         .nav-brand {
-            background: #4a5a94;
+            background: #53b387;
             width: 350px;
             height: 60px;
             display: flex;
@@ -88,7 +88,7 @@
             left: 0;
             width: 250px;
             height: calc(100vh - 60px);
-            background: #b4217c;
+            background: #00203F;
             transition: all 0.3s;
             z-index: 1020;
             overflow-y: auto;
@@ -199,14 +199,10 @@
         <button class="toggle-btn" id="toggleSidebar">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="admin-section">
-            <i class="fas fa-user"></i>
-            <p>Welcome <b>{{ request.user.username }}</p><br>
+        <div class="admin-section pt-4">
+            <p>Welcome <b>{{ request.user.username }} </b> <br><span>Role: <b>{{ request.user.role }}</b></span> </p>
 
         </div>
-        <p>
-            Role: <b>{{ request.user.role }}</b>
-        </p>
     </nav>
 
     <!-- Sidebar -->
