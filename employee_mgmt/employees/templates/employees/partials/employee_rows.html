@@ -23,6 +23,8 @@
         {% if request.user.role == "admin" %}
         <a href="{% url 'employee_edit' emp.id %}" class="btn btn-sm btn-primary">Edit</a>
         <a href="{% url 'employee_delete' emp.id %}" class="btn btn-sm btn-danger">Resign</a>
+        {% else %}
+            -
         {% endif %}
     </td>
 </tr>

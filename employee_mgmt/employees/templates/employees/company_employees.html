@@ -44,6 +44,7 @@
     Showing <span id="employeeCount">{{ employees.count }}</span> employee(s)
 </div>
 
+{% if request.user.role == "admin" %}
 <!-- Export Buttons -->
 <div class="mb-3">
     <button onclick="exportData('csv')" class="btn btn-success btn-sm">
@@ -58,10 +59,11 @@
     <button onclick="exportData('word')" class="btn btn-info btn-sm">
         <i class="bi bi-file-earmark-word"></i> Word
     </button>
-    <button onclick="window.print()" class="btn btn-secondary btn-sm">
-        <i class="bi bi-printer"></i> Print
-    </button>
+    <button onclick="exportData('print')" class="btn btn-secondary btn-sm">
+    <i class="bi bi-printer"></i> Print
+</button>
 </div>
+{% endif %}
 
 <!-- Employee Table -->
 <div class="table-responsive">
@@ -81,6 +83,10 @@
             {% include 'employees/partials/employee_rows.html' %}
         </tbody>
     </table>
+
+    <div id="paginationContainer">
+    {% include 'employees/partials/pagination.html' %}
+</div>
 </div>
 
 <a href="{% url 'company_list' %}" class="btn btn-secondary no-print">Back to Companies</a>
@@ -94,61 +100,49 @@
 </style>
 
 <script>
-    function fetchEmployees() {
-        let status = document.getElementById("statusFilter").value;
-        let team = document.getElementById("teamFilter").value;
-        let dateFrom = document.getElementById("dateFrom").value;
-        let dateTo = document.getElementById("dateTo").value;
-        let search = document.getElementById("searchFilter").value;
+let currentPage = 1;
 
-        let url = `?status=${status}&team=${team}&date_from=${dateFrom}&date_to=${dateTo}&search=${search}`;
+function fetchEmployees(page = 1) {
+    currentPage = page;
 
-        fetch(url, {
-            headers: { "X-Requested-With": "XMLHttpRequest" }
-        })
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("employeeTableBody").innerHTML = data.html;
-            document.getElementById("employeeCount").textContent = data.count;
-        })
-        .catch(error => {
-            console.error('Error fetching employees:', error);
-        });
-    }
+    let status = document.getElementById("statusFilter").value;
+    let team = document.getElementById("teamFilter").value;
+    let dateFrom = document.getElementById("dateFrom").value;
+    let dateTo = document.getElementById("dateTo").value;
+    let search = document.getElementById("searchFilter").value;
 
-    function clearFilters() {
-        document.getElementById("statusFilter").value = "";
-        document.getElementById("teamFilter").value = "";
-        document.getElementById("dateFrom").value = "";
-        document.getElementById("dateTo").value = "";
-        document.getElementById("searchFilter").value = "";
-        fetchEmployees();
-    }
+    let url = `?status=${status}&team=${team}&date_from=${dateFrom}&date_to=${dateTo}&search=${search}&page=${page}`;
 
-    function exportData(format) {
-        let status = document.getElementById("statusFilter").value;
-        let team = document.getElementById("teamFilter").value;
-        let dateFrom = document.getElementById("dateFrom").value;
-        let dateTo = document.getElementById("dateTo").value;
-        let search = document.getElementById("searchFilter").value;
-
-        let params = new URLSearchParams();
-        if (status) params.append('status', status);
-        if (team) params.append('team', team);
-        if (dateFrom) params.append('date_from', dateFrom);
-        if (dateTo) params.append('date_to', dateTo);
-        if (search) params.append('search', search);
-        params.append('export', format);
-
-        window.location.href = '?' + params.toString();
-    }
-
-    // Add event listeners for live filtering
-    document.querySelectorAll('#statusFilter, #teamFilter, #dateFrom, #dateTo').forEach(el => {
-        el.addEventListener('change', fetchEmployees);
+    fetch(url, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("employeeTableBody").innerHTML = data.html;
+        document.getElementById("paginationContainer").innerHTML = data.pagination;
+        document.getElementById("employeeCount").textContent = data.count;
+        attachPaginationEvents();
     });
+}
 
-    document.getElementById("searchFilter").addEventListener("input", fetchEmployees);
+function attachPaginationEvents() {
+    document.querySelectorAll("#paginationContainer a").forEach(link => {
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
+            fetchEmployees(this.dataset.page);
+        });
+    });
+}
+
+// Auto-filter triggers
+document.querySelectorAll('#statusFilter, #teamFilter, #dateFrom, #dateTo').forEach(el => {
+    el.addEventListener('change', () => fetchEmployees(1));
+});
+
+document.getElementById("searchFilter").addEventListener("input", () => fetchEmployees(1));
+
+attachPaginationEvents();
 </script>
+
 
 {% endblock %}

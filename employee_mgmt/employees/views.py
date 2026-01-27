@@ -90,6 +90,15 @@ def company_employees(request, company_id):
             Q(email__icontains=search) |
             Q(role__icontains=search)
         )
+        # 🔹 EXPORT HANDLING (BEFORE PAGINATION!)
+    export_type = request.GET.get('export')
+    if export_type:
+        return handle_export(request, employees, company, export_type)
+
+    # 🔹 PAGINATION
+    paginator = Paginator(employees, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     # Handle AJAX request for live filtering
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -97,26 +106,29 @@ def company_employees(request, company_id):
             'employees': employees,
             'request': request
         })
+        pagination_html = render_to_string('employees/partials/pagination.html', {
+            'page_obj': page_obj
+        })
         return JsonResponse({
             'html': html,
-            'count': employees.count()
+            'pagination': pagination_html,
+            'count': paginator.count
         })
 
     # Handle exports
-    export_type = request.GET.get('export')
-    if export_type:
-        return handle_export(employees, company, export_type)
+    
 
     teams = Team.objects.filter(company=company)
 
     return render(request, 'employees/company_employees.html', {
         'company': company,
         'employees': employees,
-        'teams': teams
+        'teams': teams,
+        'page_obj': page_obj
     })
 
 
-def handle_export(employees, company, export_type):
+def handle_export(request, employees, company, export_type):
     """Handle all export types"""
     
     if export_type == 'csv':
